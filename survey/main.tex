@@ -1,5 +1,7 @@
 \documentclass[sigconf,nonacm]{acmart}
 \usepackage{amsmath}
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows.meta,calc}
 \settopmatter{printacmref=false}
@@ -92,6 +94,27 @@ discrete identifiers can be resolved to catalog items through
 decoding and lookup, while continuous representations are
 typically converted into recommendations through
 similarity-based retrieval or preference-score ranking.
+Figure~\ref{fig:paradigms} places these procedures side by
+side: each paradigm produces a different intermediate output,
+and a catalog-mapping step turns that output into the final
+top-$K$ items.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/paradigms.pdf}
+\caption{Recommendation procedures of conventional scoring and
+the three generative paradigms. The paradigms differ in what the
+model generates and in how the generated output is mapped back to
+items in the catalog (shaded column).}
+\Description{Four rows, one per paradigm, each flowing from input
+to model, generated output, catalog mapping, and a shared box of
+top-K catalog items. Conventional scoring sorts candidate scores;
+language models generate item text that is matched to the catalog;
+recommendation-specific systems generate semantic IDs that are
+looked up; diffusion models denoise a vector that is ranked or
+matched by nearest-neighbor search.}
+\label{fig:paradigms}
+\end{figure*}
 
 Generative modeling has a long history in recommender
 systems. Mult-VAE~\cite{multvae} employs a
@@ -122,6 +145,58 @@ modeling characteristics and practical applicability.
 
 \section{Model-Level Generative Architectures}
 \label{sec:architectures}
+
+This section reviews the three paradigms in turn.
+Table~\ref{tab:methods} lists the representative methods
+discussed below together with their generated outputs and
+main design choices.
+
+\begin{table*}[t]
+\caption{Representative model-level generative recommenders
+reviewed in Section~\ref{sec:architectures}.}
+\label{tab:methods}
+\small
+\begin{tabular}{@{}L{1.75cm}L{1.65cm}L{3.6cm}L{9.55cm}@{}}
+\toprule
+\textbf{Method} & \textbf{Venue} & \textbf{Generated output} & \textbf{Key design} \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Language-model-based recommendation (Section~\ref{sec:lm})}} \\
+P5~\cite{p5} & RecSys'22 & Text answers incl.\ item IDs & Unified text-to-text model over multiple tasks with personalized prompts \\
+InstructRec~\cite{instructrec} & TOIS'25 & Text over given candidates & User needs written as instructions for instruction tuning \\
+TALLRec~\cite{tallrec} & RecSys'23 & Preference answer & Parameter-efficient tuning of an LLM on interaction data \\
+RecGPT~\cite{recgpt} & ACL'24 & Item text & Domain-adapted generative pretraining plus instruction tuning \\
+GenRec~\cite{genrec} & arXiv'23 & Item titles & LLaMA fine-tuned on textualized user--item histories \\
+GPT4Rec~\cite{gpt4rec} & arXiv'23 & Search queries & Multiple generated queries resolved by a search engine \\
+BIGRec~\cite{bigrec} & arXiv'23 & Item descriptions & Separate generation step and catalog-grounding step \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Recommendation-specific generative systems (Section~\ref{sec:rec})}} \\
+TIGER~\cite{tiger} & NeurIPS'23 & Semantic IDs & RQ-VAE codes from content embeddings; seq2seq generation with beam search \\
+LC-Rec~\cite{lcrec} & ICDE'24 & VQ item indices & Alignment tasks linking item codes, language, and interactions \\
+LETTER~\cite{letter} & CIKM'24 & Semantic IDs & Semantic, collaborative, and code-diversity regularization; ranking-guided loss \\
+CoST~\cite{cost} & RecSys'24 & Semantic IDs & Contrastive item relations in quantization \\
+MMGRec~\cite{mmgrec} & arXiv'24 & Multimodal IDs & Graph-aware residual quantization of multimodal and collaborative features \\
+EAGER~\cite{eager} & KDD'24 & Behavior and semantic codes & Shared encoder, two decoders, confidence-based ranking \\
+IDGenRec~\cite{idgenrec} & SIGIR'24 & Textual IDs & Concise textual identifiers that keep linguistic meaning \\
+STORE~\cite{store} & arXiv'24 & Semantic tokens & Tokenization and recommendation in one LLM backbone \\
+ETEGRec~\cite{etegrec} & SIGIR'25 & Semantic IDs & Tokenizer and generator trained alternately with two alignment losses \\
+TokenRec~\cite{tokenrec} & TKDE'25 & Collaborative tokens & Masked-representation quantization; retrieval without beam decoding \\
+MBGen~\cite{mbgen} & CIKM'24 & Behavior, then item & Interleaved behavior and item tokens; position-routed sparse model \\
+HSTU~\cite{hstu} & ICML'24 & Next action & Hierarchical sequential transduction units for long, large-scale histories \\
+OneRec~\cite{onerec} & arXiv'25 & Item lists (sessions) & Sparse MoE encoder--decoder; DPO-based iterative preference alignment \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Diffusion-based recommendation (Section~\ref{sec:diffusion})}} \\
+DiffRec~\cite{diffrec} & SIGIR'23 & Interaction vectors & Denoised interactions for ranking; latent (L-) and temporal (T-) variants \\
+DreamRec~\cite{dreamrec} & NeurIPS'23 & Next-item embedding & History-guided generation matched to items by similarity \\
+DiffuRec~\cite{diffurec} & TOIS'24 & Item distributions & Uncertain multi-aspect item representations with rounding \\
+DimeRec~\cite{dime} & WSDM'25 & Preference vectors & Guidance extraction plus diffusion-based interest aggregation \\
+DCRec~\cite{dcrec} & arXiv'24 & Item indices & Discrete-to-continuous diffusion with dual conditioning \\
+DDSR~\cite{ddsr} & NeurIPS'24 & Discrete semantic states & Discrete-state transitions over fuzzy sets and quantized labels \\
+PreferDiff~\cite{preferdiff} & ICLR'25 & Item embeddings & BPR-style ranking with multiple negatives inside diffusion training \\
+PDRec~\cite{pdrec} & AAAI'24 & Preference signals & Plug-in for reweighting, augmentation, and negative sampling \\
+TA-Rec~\cite{tarec} & NeurIPS'25 & Item embeddings & One-step generation with temporal consistency and preference alignment \\
+\bottomrule
+\end{tabular}
+\end{table*}
 
 
 \subsection{Language-Model-Based Recommendation}
@@ -305,7 +380,23 @@ prediction. At inference, beam search generates
 candidate code sequences, which are resolved into
 catalog items through identifier lookup. Additional
 disambiguation is used when multiple items receive
-the same semantic codes.
+the same semantic codes. Figure~\ref{fig:semantic_id}
+illustrates both steps.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/semantic_id.pdf}
+\caption{Semantic identifiers. (a) Each level selects the
+nearest codebook vector and passes the residual to the next
+level. (b) Related items share code prefixes, and decoding
+follows a beam path through the prefix tree to a valid item.}
+\Description{Top: an item embedding is quantized over three
+levels, giving the code (3, 7, 1). Bottom: a prefix tree from the
+user history through codes to four items; headphones, earbuds, and
+a speaker share prefix 3, and the highlighted beam path reaches
+headphones.}
+\label{fig:semantic_id}
+\end{figure}
 
 This formulation connects representation learning
 with generative retrieval: the tokenizer determines
@@ -799,6 +890,31 @@ influence both the statistical properties of the models
 and their computational requirements. The following comparison
 examines their generation targets, learning signals, inference
 procedures, and principal trade-offs.
+Table~\ref{tab:comparison} summarizes these differences.
+
+\begin{table*}[t]
+\caption{Comparison of conventional scoring and the three
+generative paradigms.}
+\label{tab:comparison}
+\small
+\renewcommand{\arraystretch}{1.18}
+\begin{tabular}{@{}L{2.25cm}L{3.35cm}L{3.6cm}L{3.6cm}L{3.6cm}@{}}
+\toprule
+ & \textbf{Conventional scoring} & \textbf{Language-model-based} & \textbf{Recommendation-specific} & \textbf{Diffusion-based} \\
+\midrule
+\textit{Generated output} & Scores of retrieved candidates & Item titles, descriptions, or search queries & Semantic-ID tokens, behavior tokens, or item lists & Interaction vectors, item embeddings, or preference vectors \\
+\textit{Item representation} & Atomic IDs and embeddings & Natural language & Discrete compositional codes & Continuous vectors or discrete states \\
+\textit{Training objective} & Ranking or classification loss & Language-modeling likelihood, instruction tuning & Token-level likelihood, preference alignment & Denoising reconstruction, ranking-aware variants \\
+\textit{Inference} & Retrieve, then score & Autoregressive decoding & Beam search over code prefixes & $T$-step reverse denoising \\
+\textit{Catalog mapping} & Implicit (candidates are items) & Entity matching, grounding, or search & Identifier lookup and collision handling & Score ranking, nearest neighbor, or rounding \\
+\textit{Main inference cost} & Number of scored candidates & Output length and model size & Code length and beam width & Number of denoising steps \\
+\textit{New items} & Add embedding to index & Use new descriptions; depends on search index & Assign codes; codebook updates may change IDs & Need a representation in the item index \\
+\textit{Strengths} & Mature and efficient & Pretrained semantic knowledge, flexible task interface & Compact output space, shared prefixes, end-to-end retrieval & Distributional modeling of uncertain and multiple interests \\
+\textit{Limitations} & Items lost at retrieval cannot be recovered & Ambiguous grounding, weak collaborative signal & ID collisions, tokenizer--generator mismatch & Denoising--ranking mismatch, multi-step cost \\
+\textit{Representative} & YouTube DNN~\cite{youtube}, SASRec~\cite{sasrec} & P5~\cite{p5}, TALLRec~\cite{tallrec}, BIGRec~\cite{bigrec} & TIGER~\cite{tiger}, LETTER~\cite{letter}, OneRec~\cite{onerec} & DiffRec~\cite{diffrec}, DreamRec~\cite{dreamrec}, PreferDiff~\cite{preferdiff} \\
+\bottomrule
+\end{tabular}
+\end{table*}
 
 
 

@@ -7,6 +7,7 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+FIGURES = ['overview', 'paradigms', 'semantic_id']
 
 
 def tex_environment(tex_bin):
@@ -50,16 +51,17 @@ def compile_tex(source, working_directory, build_directory, env):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--tex-bin', help='Directory containing latexmk, pdflatex and bibtex')
-    parser.add_argument('--figure-only', action='store_true', help='Build only figures/overview.pdf')
+    parser.add_argument('--figure-only', action='store_true', help='Build only the figure PDFs')
     parser.add_argument('--regenerate-figure', action='store_true',
                         help='Regenerate TikZ sources from generate_overview.py before compiling')
     args = parser.parse_args()
     env = tex_environment(args.tex_bin)
     if args.regenerate_figure:
         subprocess.run([sys.executable, str(ROOT / 'scripts' / 'generate_overview.py')], check=True)
-    figure = compile_tex('overview.tex', ROOT / 'figures', ROOT / 'build' / 'figure', env)
-    shutil.copy2(figure, ROOT / 'figures' / 'overview.pdf')
-    print('Built figures/overview.pdf')
+    for name in FIGURES:
+        figure = compile_tex(name + '.tex', ROOT / 'figures', ROOT / 'build' / 'figure', env)
+        shutil.copy2(figure, ROOT / 'figures' / (name + '.pdf'))
+        print(f'Built figures/{name}.pdf')
     if not args.figure_only:
         paper = compile_tex('main.tex', ROOT, ROOT / 'build' / 'paper', env)
         (ROOT / 'output').mkdir(exist_ok=True)

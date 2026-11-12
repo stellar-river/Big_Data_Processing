@@ -1,0 +1,91 @@
+% Semantic identifiers: residual quantization (a) and the resulting
+% code-prefix tree searched during decoding (b). Colors follow overview.tikz.
+\begingroup
+\definecolor{treeblue}{HTML}{264F95}
+\definecolor{treeorange}{HTML}{DF7943}
+\definecolor{treegreen}{HTML}{528D36}
+\definecolor{treered}{HTML}{D94E42}
+\definecolor{treecyan}{HTML}{177FA6}
+\begin{tikzpicture}[
+    x=1cm,y=1cm,
+    every node/.style={font=\fontsize{7.6}{9}\selectfont,text=black,outer sep=0pt},
+    cell/.style={draw=black!50,line width=.35pt,minimum width=.27cm,
+        minimum height=.27cm,inner sep=0pt,font=\fontsize{6.2}{7}\selectfont},
+    flow/.style={-{Stealth[length=3.6pt]},draw=black!65,line width=.55pt},
+    tnode/.style={circle,draw=black!55,line width=.45pt,fill=white,
+        minimum size=.46cm,inner sep=0pt,font=\fontsize{7.2}{8}\selectfont},
+    leaf/.style={draw=black!50,line width=.45pt,rounded corners=1.5pt,
+        fill=black!2,minimum width=1.8cm,minimum height=.46cm,inner sep=2pt,
+        font=\fontsize{7}{8}\selectfont},
+    edge/.style={draw=black!55,line width=.5pt},
+    beam/.style={draw=treered,line width=1.1pt}
+]
+% ---------------- (a) residual quantization ----------------
+\node[anchor=west,font=\fontsize{7.8}{9}\selectfont\bfseries] at (-.2,.75)
+    {(a) Residual quantization of an item embedding};
+% Shades of the residual vector shrink level by level.
+\foreach \m/\lab/\code/\sa/\sb/\sc/\sd/\se in
+    {1/{\mathbf{r}_0=\mathbf{e}_i}/3/70/35/55/20/60,
+     2/{\mathbf{r}_1}/7/35/18/28/10/30,
+     3/{\mathbf{r}_2}/1/14/8/12/5/12} {
+    \pgfmathsetmacro{\y}{-(\m-1)*.82}
+    \node[anchor=east] at (.55,\y) {$\lab$};
+    \foreach \k/\s in {0/\sa,1/\sb,2/\sc,3/\sd,4/\se}
+        \node[cell,fill=treeblue!\s] at (.75+\k*.27,\y) {};
+    \draw[flow] (2.0,\y) -- (2.45,\y);
+    \foreach \k in {0,...,7} {
+        \ifnum\k=\code
+            \node[cell,fill=treegreen!55,draw=treegreen,line width=.6pt] at (2.65+\k*.27,\y) {\k};
+        \else
+            \node[cell,fill=black!4] at (2.65+\k*.27,\y) {\k};
+        \fi
+    }
+    \node[anchor=west,font=\fontsize{6.8}{8}\selectfont,text=black!70] at (4.8,\y) {codebook $\mathbf{c}_{\m,\cdot}$};
+    \node[anchor=west] at (6.45,\y) {$z_{i,\m}=\code$};
+}
+\node[anchor=south,font=\fontsize{6.8}{8}\selectfont,text=black!70] at (2.22,.12) {nearest};
+% Residual updates between levels.
+\foreach \m in {1,2} {
+    \pgfmathsetmacro{\ya}{-(\m-1)*.82-.17}
+    \pgfmathsetmacro{\yb}{-\m*.82+.17}
+    \draw[flow] (1.29,\ya) -- (1.29,\yb)
+        node[midway,right=1pt,font=\fontsize{6.6}{7.5}\selectfont,text=black!70]
+        {$-\,\mathbf{c}_{\m,z_{i,\m}}$};
+}
+\node[draw=treegreen,line width=.6pt,rounded corners=1.5pt,fill=treegreen!6,
+    inner sep=3pt,anchor=north] at (4.1,-2.0)
+    {semantic ID of item $i$: $(z_{i,1},z_{i,2},z_{i,3})=(3,7,1)$};
+
+% ---------------- (b) prefix tree ----------------
+\node[anchor=west,font=\fontsize{7.8}{9}\selectfont\bfseries] at (-.2,-2.95)
+    {(b) Code-prefix tree searched during decoding};
+\def\ta{-3.55}\def\tb{-4.35}\def\tc{-5.15}\def\td{-5.95}
+\node[tnode,fill=black!6] (root) at (5.3,\ta) {$h$};
+\node[tnode] (n3)  at (3.45,\tb) {3};
+\node[tnode] (n5)  at (7.16,\tb) {5};
+\node[tnode] (n37) at (1.86,\tc) {7};
+\node[tnode] (n32) at (5.04,\tc) {2};
+\node[tnode] (n51) at (7.16,\tc) {1};
+\node[leaf] (A) at (.8,\td)  {$(3,7,1)$ headphones};
+\node[leaf] (B) at (2.92,\td) {$(3,7,4)$ earbuds};
+\node[leaf] (C) at (5.04,\td)  {$(3,2,6)$ speaker};
+\node[leaf] (D) at (7.16,\td) {$(5,1,2)$ laptop};
+\draw[edge] (root) -- (n5);  \draw[edge] (n3) -- (n32);
+\draw[edge] (n37) -- (B.north); \draw[edge] (n32) -- (C.north);
+\draw[edge] (n5) -- (n51);  \draw[edge] (n51) -- (D.north);
+\draw[beam] (root) -- (n3); \draw[beam] (n3) -- (n37); \draw[beam] (n37) -- (A.north);
+\node[leaf,draw=treered,line width=.8pt,fill=treered!6] at (A) {$(3,7,1)$ headphones};
+\foreach \n in {root,n3,n37}
+    \node[tnode,draw=treered,line width=.8pt,fill=white] at (\n) {};
+\node[font=\fontsize{7.2}{8}\selectfont] at (root) {$h$};
+\node[font=\fontsize{7.2}{8}\selectfont] at (n3) {3};
+\node[font=\fontsize{7.2}{8}\selectfont] at (n37) {7};
+% Annotations.
+\node[anchor=west,font=\fontsize{6.8}{8}\selectfont,text=treered] at (5.7,\ta)
+    {beam path $z_1\!\to z_2\!\to z_3$};
+\draw[treegreen,dashed,line width=.5pt,rounded corners=3pt]
+    ($(A.south west)+(-.07,-.07)$) rectangle ($(C.north east)+(.07,.07)$);
+\node[anchor=north,font=\fontsize{6.8}{8}\selectfont,text=treegreen!80!black]
+    at ($(A.south west)!.5!(C.south east)+(0,-.1)$) {related audio items share the prefix 3};
+\end{tikzpicture}
+\endgroup

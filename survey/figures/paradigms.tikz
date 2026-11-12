@@ -1,0 +1,98 @@
+% Recommendation pipelines of conventional scoring and the three generative
+% paradigms. Colors follow overview.tikz.
+\begingroup
+\definecolor{treeblue}{HTML}{264F95}
+\definecolor{treeorange}{HTML}{DF7943}
+\definecolor{treegreen}{HTML}{528D36}
+\definecolor{treered}{HTML}{D94E42}
+\definecolor{treecyan}{HTML}{177FA6}
+\definecolor{treegray}{HTML}{666666}
+\begin{tikzpicture}[
+    x=1cm,y=1cm,
+    every node/.style={font=\fontsize{7.6}{9}\selectfont,align=center,
+        text=black,outer sep=0pt},
+    head/.style={font=\fontsize{7.8}{9.2}\selectfont\bfseries,anchor=south},
+    rowlabel/.style={draw=#1,line width=.65pt,rounded corners=1.8pt,
+        fill=#1!7,text width=2.05cm,minimum height=1.05cm,inner sep=3pt},
+    inbox/.style={draw=black!45,line width=.45pt,rounded corners=1.8pt,
+        fill=black!2,text width=2.45cm,minimum height=1.05cm,inner sep=3pt},
+    model/.style={draw=#1,line width=.55pt,rounded corners=1.8pt,
+        fill=#1!4,text width=2.45cm,minimum height=1.05cm,inner sep=3pt},
+    outbox/.style={text width=2.45cm,minimum height=1.05cm,inner sep=0pt},
+    mapbox/.style={draw=treered,line width=.55pt,rounded corners=1.8pt,
+        fill=white,text width=2.35cm,minimum height=1.05cm,inner sep=3pt},
+    flow/.style={-{Stealth[length=4pt]},draw=black!65,line width=.6pt},
+    cell/.style={draw=black!55,line width=.35pt,minimum width=.3cm,
+        minimum height=.3cm,inner sep=0pt,font=\fontsize{6.6}{7}\selectfont}
+]
+% Column centers.
+\def\cl{1.1}\def\ci{3.85}\def\cm{6.85}\def\co{9.85}\def\cp{12.8}\def\cr{15.75}
+% Row centers.
+\def\ra{0}\def\rb{-1.45}\def\rc{-2.9}\def\rd{-4.35}
+
+% Catalog-mapping band.
+\fill[treered!6,rounded corners=3pt] (\cp-1.42,\ra+.82) rectangle (\cp+1.42,\rd-.72);
+\draw[treered!70,dashed,line width=.5pt,rounded corners=3pt]
+    (\cp-1.42,\ra+.82) rectangle (\cp+1.42,\rd-.72);
+
+% Column headers.
+\node[head] at (\ci,\ra+.86) {Input};
+\node[head] at (\cm,\ra+.86) {Model and inference};
+\node[head] at (\co,\ra+.86) {Generated output};
+\node[head,text=treered] at (\cp,\ra+.86) {Catalog mapping};
+\node[head] at (\cr,\ra+.86) {Decision};
+
+% Row 1: conventional scoring.
+\node[rowlabel=treegray] (l1) at (\cl,\ra) {Conventional\\scoring (Sec.~2)};
+\node[inbox] (i1) at (\ci,\ra) {History $h$, context $c$};
+\node[model=treegray] (m1) at (\cm,\ra) {Candidate retrieval,\\then scoring\\$s_\theta(h,c,i)$};
+\node[outbox] (o1) at (\co,\ra) {};
+\foreach \k/\v in {0/.62,1/.48,2/.36,3/.27,4/.18,5/.12}
+    \fill[black!45] (\co-.75+\k*.26,\ra-.38) rectangle ++(.18,\v);
+\node[font=\fontsize{6.8}{8}\selectfont,anchor=north] at (\co,\ra-.4) {scores of retrieved candidates};
+\node[mapbox] (p1) at (\cp,\ra) {Sort the retrieved\\candidates};
+
+% Row 2: language-model-based.
+\node[rowlabel=treecyan] (l2) at (\cl,\rb) {Language-model-\\based (Sec.~3.1)};
+\node[inbox] (i2) at (\ci,\rb) {Prompt: textualized\\history and instruction};
+\node[model=treecyan] (m2) at (\cm,\rb) {Language model,\\autoregressive decoding};
+\node[outbox,draw=treecyan!70,dashed,line width=.45pt,rounded corners=1.8pt,
+    fill=white,text width=2.35cm,inner sep=3pt,font=\fontsize{7.2}{8.6}\selectfont\itshape]
+    (o2) at (\co,\rb) {``wireless noise-\\cancelling headphones''};
+\node[mapbox] (p2) at (\cp,\rb) {Entity matching or\\search over the catalog};
+
+% Row 3: recommendation-specific (semantic IDs).
+\node[rowlabel=treegreen] (l3) at (\cl,\rc) {Recommendation-\\specific (Sec.~3.2)};
+\node[inbox] (i3) at (\ci,\rc) {History as item-token\\sequence};
+\node[model=treegreen] (m3) at (\cm,\rc) {Autoregressive generator,\\beam search};
+\node[outbox] (o3) at (\co,\rc) {};
+\node[cell,fill=treegreen!45] (z1) at (\co-.36,\rc+.12) {3};
+\node[cell,fill=treegreen!28,right=.06cm of z1] (z2) {7};
+\node[cell,fill=treegreen!14,right=.06cm of z2] (z3) {1};
+\node[font=\fontsize{6.8}{8}\selectfont,anchor=north] at (\co,\rc-.12) {semantic ID $(z_1,\ldots,z_M)$};
+\node[mapbox] (p3) at (\cp,\rc) {Identifier lookup,\\collision handling};
+
+% Row 4: diffusion-based.
+\node[rowlabel=treeorange] (l4) at (\cl,\rd) {Diffusion-based\\(Sec.~3.3)};
+\node[inbox] (i4) at (\ci,\rd) {Noise $\mathbf{x}_T$ and\\guidance from $h$};
+\node[model=treeorange] (m4) at (\cm,\rd) {Denoiser $\boldsymbol{\epsilon}_\theta$,\\$T$ reverse steps};
+\node[outbox] (o4) at (\co,\rd) {};
+\foreach \k/\s in {0/55,1/20,2/70,3/35,4/8,5/48,6/25}
+    \node[cell,fill=treeorange!\s,minimum width=.24cm] at (\co-.78+\k*.26,\rd+.12) {};
+\node[font=\fontsize{6.8}{8}\selectfont,anchor=north] at (\co,\rd-.12) {preference vector or $\mathbf{x}_0$};
+\node[mapbox] (p4) at (\cp,\rd) {Score ranking or\\nearest-neighbor\\search};
+
+% Shared decision node.
+\node[draw=treeblue,line width=.65pt,rounded corners=1.8pt,fill=treeblue!4,
+    text width=1.95cm,minimum height=5.4cm,inner sep=3pt] (dec) at (\cr,{(\ra+\rd)/2})
+    {Top-$K$ items\\in catalog $\mathcal{I}$};
+
+% Arrows.
+\foreach \r in {1,2,3,4} {
+    \draw[flow] (i\r.east) -- (m\r.west);
+    \draw[flow] (m\r.east) -- (\co-1.34,0 |- m\r.east);
+    \draw[flow] (\co+1.34,0 |- p\r.west) -- (p\r.west);
+    \draw[flow] (p\r.east) -- (dec.west |- p\r.east);
+}
+\end{tikzpicture}
+\endgroup
