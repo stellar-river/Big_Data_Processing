@@ -1,16 +1,11 @@
+"""Regenerate the taxonomy figure sources; leaves main.tex untouched."""
 from pathlib import Path
 import re
-import shutil
 
-out = Path(__file__).resolve().parent
-paper = out.parent
-if not (paper / 'survey.tex').exists():
-    # The full manuscript source was archived after this preview became the
-    # final version; fall back to the archived copy when regenerating.
-    archived = paper / 'unused' / 'survey_revision_20261104'
-    if (archived / 'survey.tex').exists():
-        paper = archived
-bib = (paper / 'references.bib').read_text()
+root = Path(__file__).resolve().parents[1]
+out = root / 'figures'
+out.mkdir(parents=True, exist_ok=True)
+bib = (root / 'references.bib').read_text()
 entries = {}
 for line in bib.splitlines():
     match = re.match(r'@\w+\{([^,]+),', line)
@@ -93,7 +88,7 @@ majors = [
 ]
 
 lines = [r'''% Reference-style taxonomy. All methods and bibliographic metadata
-% are drawn from the current survey.tex and references.bib.
+% are drawn from the main.tex and references.bib.
 % Section numbers follow the current manuscript's organization.
 \begingroup
 \definecolor{treeblue}{HTML}{264F95}
@@ -157,7 +152,7 @@ lines.extend([
 for name, *_ in majors:
     lines.append(rf'\draw[link] (1.44,0 |- {name}.west) -- ({name}.west);')
 lines.extend([r'\end{tikzpicture}', r'\endgroup'])
-(out / 'survey_overview_tree.tikz').write_text('\n'.join(lines) + '\n')
+(out / 'overview.tikz').write_text('\n'.join(lines) + '\n')
 
 standalone = r'''\documentclass[border=5pt]{standalone}
 \usepackage[T1]{fontenc}
@@ -165,35 +160,9 @@ standalone = r'''\documentclass[border=5pt]{standalone}
 \usepackage{tikz}
 \usetikzlibrary{calc}
 \begin{document}
-\input{survey_overview_tree.tikz}
+\input{overview.tikz}
 \end{document}
 '''
-(out / 'survey_overview_tree.tex').write_text(standalone)
+(out / 'overview.tex').write_text(standalone)
 
-original = (paper / 'survey.tex').read_text()
-preview = original.replace(r'\usetikzlibrary{positioning,arrows.meta}',
-                           r'\usetikzlibrary{positioning,arrows.meta,calc}')
-start = preview.index(r'\begin{figure*}')
-end = preview.index(r'\end{figure*}', start) + len(r'\end{figure*}')
-new_figure = r'''\begin{figure*}[!t]
-\centering
-\includegraphics[width=\textwidth,height=.90\textheight,keepaspectratio]{survey_overview_tree.pdf}
-\caption{Taxonomy and organization of this survey. The tree follows the
-sections on generative architectures and cross-paradigm comparison.
-Representative methods are grouped by the architectural
-subtopics reviewed in the text; colored labels identify their technical focus.
-The grouping follows the survey structure, and related methods may span
-multiple topics.}
-\Description{A left-to-right tree rooted at Survey Overview. Two branches
-represent generative architectures and cross-paradigm comparison.
-The architecture branch expands into language-model-based,
-recommendation-specific, and diffusion-based methods, with nine subtopic
-boxes listing representative methods and author-year references. Four
-comparison dimensions appear below.}
-\label{fig:survey_overview}
-\end{figure*}'''
-preview = preview[:start] + new_figure + preview[end:]
-(out / 'survey_tree_preview.tex').write_text(preview)
-for name in ('acmart.cls', 'references.bib', 'ACM-Reference-Format.bst'):
-    shutil.copy2(paper / name, out / name)
-print('Created editable TikZ, standalone figure, and manuscript preview sources.')
+print('Generated figures/overview.tikz and figures/overview.tex from references.bib.')

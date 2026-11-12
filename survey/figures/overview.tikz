@@ -1,5 +1,5 @@
 % Reference-style taxonomy. All methods and bibliographic metadata
-% are drawn from the current survey.tex and references.bib.
+% are drawn from the main.tex and references.bib.
 % Section numbers follow the current manuscript's organization.
 \begingroup
 \definecolor{treeblue}{HTML}{264F95}
