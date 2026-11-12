@@ -1,0 +1,102 @@
+% Reference-style taxonomy. All methods and bibliographic metadata
+% are drawn from the current survey.tex and references.bib.
+% Section numbers follow the current manuscript's organization.
+\begingroup
+\definecolor{treeblue}{HTML}{264F95}
+\definecolor{treeorange}{HTML}{DF7943}
+\definecolor{treegreen}{HTML}{528D36}
+\definecolor{treered}{HTML}{D94E42}
+\definecolor{treecyan}{HTML}{177FA6}
+\begin{tikzpicture}[
+    x=1cm,y=1cm,
+    every node/.style={font=\fontsize{7.3}{8.6}\selectfont,
+        align=left,text=black,outer sep=0pt},
+    root/.style={draw=treeblue,line width=.65pt,rounded corners=1.8pt,
+        fill=treeblue!2,text width=1.02cm,inner sep=3pt},
+    major/.style={draw=treeorange,line width=.6pt,rounded corners=1.8pt,
+        fill=treeorange!3,text width=2.25cm,inner sep=3pt},
+    category/.style={draw=treegreen,line width=.55pt,rounded corners=1.8pt,
+        fill=treegreen!3,text width=2.85cm,inner sep=3pt,
+        font=\fontsize{7.1}{8.3}\selectfont},
+    detail/.style={draw=black!48,line width=.45pt,rounded corners=2pt,
+        fill=black!2,text width=9.05cm,inner sep=3pt,
+        minimum height=.98cm},
+    link/.style={draw=black!65,line width=.55pt}
+]
+\node[detail,anchor=north west] (a1) at (8.1,0) {\textbf{\textit{Recommendation-Oriented Adaptation}} (3.1.1): \textcolor{treered}{Task adaptation: }\mbox{\textbf{P5}} Geng et al. (2022); \mbox{\textbf{InstructRec}} Zhang et al. (2025); \mbox{\textbf{TALLRec}} Bao et al. (2023). \textcolor{treecyan}{Domain-oriented training: }\mbox{\textbf{RecGPT}} Ngo and Nguyen (2024); \mbox{\textbf{GenRec}} Ji et al. (2023).};
+\node[detail,anchor=north west] (a2) at ([yshift=-.16cm]a1.south west) {\textbf{\textit{Output Representations and Catalog Grounding}} (3.1.2): \textcolor{treered}{Textual item generation: }\mbox{\textbf{GenRec}} Ji et al. (2023). \textcolor{treecyan}{Query generation: }\mbox{\textbf{GPT4Rec}} Li et al. (2023). \textcolor{treegreen}{Catalog grounding: }\mbox{\textbf{BIGRec}} Bao et al. (2023).};
+\node[detail,anchor=north west] (a3) at ([yshift=-.25cm]a2.south west) {\textbf{\textit{Generative Retrieval and Semantic IDs}} (3.2.1): \textcolor{treered}{Semantic-ID generation: }\mbox{\textbf{TIGER}} Rajput et al. (2023).};
+\node[detail,anchor=north west] (a4) at ([yshift=-.16cm]a3.south west) {\textbf{\textit{Collaborative and Multimodal Tokenization}} (3.2.2): \textcolor{treered}{Collaborative alignment: }\mbox{\textbf{LC-Rec}} Zheng et al. (2024); \mbox{\textbf{LETTER}} Wang et al. (2024); \mbox{\textbf{CoST}} Zhu et al. (2024). \textcolor{treecyan}{Multimodal codes: }\mbox{\textbf{MMGRec}} Liu et al. (2024). \textcolor{treegreen}{Behavior--semantic generation: }\mbox{\textbf{EAGER}} Wang et al. (2024).};
+\node[detail,anchor=north west] (a5) at ([yshift=-.16cm]a4.south west) {\textbf{\textit{Joint Tokenization and Generation}} (3.2.3): \textcolor{treered}{Shared backbone: }\mbox{\textbf{STORE}} Liu et al. (2024). \textcolor{treecyan}{Tokenizer--recommender alignment: }\mbox{\textbf{ETEGRec}} Liu et al. (2025). \textcolor{treegreen}{Collaborative tokenization and retrieval: }\mbox{\textbf{TokenRec}} Qu et al. (2025).};
+\node[detail,anchor=north west] (a6) at ([yshift=-.16cm]a5.south west) {\textbf{\textit{Scalable Sequential and Session Generation}} (3.2.4): \textcolor{treered}{Multi-behavior modeling: }\mbox{\textbf{MBGen}} Liu et al. (2024). \textcolor{treecyan}{Scalable sequential transduction: }\mbox{\textbf{HSTU}} Zhai et al. (2024). \textcolor{treegreen}{Recommendation-list generation: }\mbox{\textbf{OneRec}} Deng et al. (2025).};
+\node[detail,anchor=north west] (a7) at ([yshift=-.25cm]a6.south west) {\textbf{\textit{Interaction and Item Representation Diffusion}} (3.3.1): \textcolor{treered}{Interaction reconstruction: }\mbox{\textbf{DiffRec}} Wang et al. (2023). \textcolor{treecyan}{Target item generation: }\mbox{\textbf{DreamRec}} Yang et al. (2023); \mbox{\textbf{DiffuRec}} Li et al. (2024). \textcolor{treegreen}{Dynamic preference modeling: }\mbox{\textbf{DimeRec}} Li et al. (2025).};
+\node[detail,anchor=north west] (a8) at ([yshift=-.16cm]a7.south west) {\textbf{\textit{Discrete-State and Catalog-Aware Generation}} (3.3.2): \textcolor{treered}{Discrete-to-continuous diffusion: }\mbox{\textbf{DCRec}} Huang et al. (2024). \textcolor{treecyan}{Discrete-state diffusion: }\mbox{\textbf{DDSR}} Xie et al. (2024).};
+\node[detail,anchor=north west] (a9) at ([yshift=-.16cm]a8.south west) {\textbf{\textit{Preference Alignment and Efficient Inference}} (3.3.3): \textcolor{treered}{Ranking alignment: }\mbox{\textbf{PreferDiff}} Liu et al. (2025). \textcolor{treecyan}{Preference-guided recommendation: }\mbox{\textbf{PDRec}} Ma et al. (2024). \textcolor{treegreen}{One-step generation: }\mbox{\textbf{TA-Rec}} Mao et al. (2025).};
+\node[detail,anchor=north west] (c1) at ([yshift=-.45cm]a9.south west) {\textcolor{treered}{Text, semantic codes, and continuous representations: }information sharing, semantic transfer, collaborative signals, and representation geometry.};
+\node[detail,anchor=north west] (c2) at ([yshift=-.25cm]c1.south west) {\textcolor{treered}{Likelihood, denoising, and preference alignment: }relationships between generative training signals and recommendation utility.};
+\node[detail,anchor=north west] (c3) at ([yshift=-.25cm]c2.south west) {\textcolor{treered}{Decoding, denoising, and catalog mapping: }validity constraints, identifier maintenance, and complete serving costs.};
+\node[detail,anchor=north west] (c4) at ([yshift=-.25cm]c3.south west) {\textcolor{treered}{Effectiveness and efficiency: }consistent tasks, temporal splits, candidate sets, computational budgets, and pipeline evaluation.};
+\coordinate (mid-lm) at ($(a1.west)!.5!(a2.west)$);
+\node[category,anchor=west] (lm) at (4.65,0 |- mid-lm) {Language-model-based\\recommendation\\(Sec.~3.1)};
+\draw[link] (lm.east) -- (7.87,0 |- lm.east);
+\draw[link] (7.87,0 |- a1.west) -- (7.87,0 |- a2.west);
+\draw[link] (7.87,0 |- a1.west) -- (a1.west);
+\draw[link] (7.87,0 |- a2.west) -- (a2.west);
+\coordinate (mid-rec) at ($(a3.west)!.5!(a6.west)$);
+\node[category,anchor=west] (rec) at (4.65,0 |- mid-rec) {Recommendation-specific\\generative systems\\(Sec.~3.2)};
+\draw[link] (rec.east) -- (7.87,0 |- rec.east);
+\draw[link] (7.87,0 |- a3.west) -- (7.87,0 |- a6.west);
+\draw[link] (7.87,0 |- a3.west) -- (a3.west);
+\draw[link] (7.87,0 |- a4.west) -- (a4.west);
+\draw[link] (7.87,0 |- a5.west) -- (a5.west);
+\draw[link] (7.87,0 |- a6.west) -- (a6.west);
+\coordinate (mid-diff) at ($(a7.west)!.5!(a9.west)$);
+\node[category,anchor=west] (diff) at (4.65,0 |- mid-diff) {Diffusion-based\\recommendation\\(Sec.~3.3)};
+\draw[link] (diff.east) -- (7.87,0 |- diff.east);
+\draw[link] (7.87,0 |- a7.west) -- (7.87,0 |- a9.west);
+\draw[link] (7.87,0 |- a7.west) -- (a7.west);
+\draw[link] (7.87,0 |- a8.west) -- (a8.west);
+\draw[link] (7.87,0 |- a9.west) -- (a9.west);
+\coordinate (mid-representation) at ($(c1.west)!.5!(c1.west)$);
+\node[category,anchor=west] (representation) at (4.65,0 |- mid-representation) {Representation and\\inductive bias\\(Sec.~4.1)};
+\draw[link] (representation.east) -- (7.87,0 |- representation.east);
+\draw[link] (7.87,0 |- c1.west) -- (7.87,0 |- c1.west);
+\draw[link] (7.87,0 |- c1.west) -- (c1.west);
+\coordinate (mid-objectives) at ($(c2.west)!.5!(c2.west)$);
+\node[category,anchor=west] (objectives) at (4.65,0 |- mid-objectives) {Learning objectives\\and decision alignment\\(Sec.~4.2)};
+\draw[link] (objectives.east) -- (7.87,0 |- objectives.east);
+\draw[link] (7.87,0 |- c2.west) -- (7.87,0 |- c2.west);
+\draw[link] (7.87,0 |- c2.west) -- (c2.west);
+\coordinate (mid-inference) at ($(c3.west)!.5!(c3.west)$);
+\node[category,anchor=west] (inference) at (4.65,0 |- mid-inference) {Inference, validity,\\and catalog dynamics\\(Sec.~4.3)};
+\draw[link] (inference.east) -- (7.87,0 |- inference.east);
+\draw[link] (7.87,0 |- c3.west) -- (7.87,0 |- c3.west);
+\draw[link] (7.87,0 |- c3.west) -- (c3.west);
+\coordinate (mid-evaluation) at ($(c4.west)!.5!(c4.west)$);
+\node[category,anchor=west] (evaluation) at (4.65,0 |- mid-evaluation) {Evaluation and\\comparability\\(Sec.~4.4)};
+\draw[link] (evaluation.east) -- (7.87,0 |- evaluation.east);
+\draw[link] (7.87,0 |- c4.west) -- (7.87,0 |- c4.west);
+\draw[link] (7.87,0 |- c4.west) -- (c4.west);
+\coordinate (mid-architectures) at ($(a1.west)!.5!(a9.west)$);
+\node[major,anchor=west] (architectures) at (1.72,0 |- mid-architectures) {Model-Level\\Generative\\Architectures\\(Sec.~3)};
+\draw[link] (architectures.east) -- (4.39,0 |- architectures.east);
+\draw[link] (4.39,0 |- lm.west) -- (4.39,0 |- diff.west);
+\draw[link] (4.39,0 |- lm.west) -- (lm.west);
+\draw[link] (4.39,0 |- rec.west) -- (rec.west);
+\draw[link] (4.39,0 |- diff.west) -- (diff.west);
+\coordinate (mid-comparison) at ($(c1.west)!.5!(c4.west)$);
+\node[major,anchor=west] (comparison) at (1.72,0 |- mid-comparison) {Cross-Paradigm\\Comparison\\(Sec.~4)};
+\draw[link] (comparison.east) -- (4.39,0 |- comparison.east);
+\draw[link] (4.39,0 |- representation.west) -- (4.39,0 |- evaluation.west);
+\draw[link] (4.39,0 |- representation.west) -- (representation.west);
+\draw[link] (4.39,0 |- objectives.west) -- (objectives.west);
+\draw[link] (4.39,0 |- inference.west) -- (inference.west);
+\draw[link] (4.39,0 |- evaluation.west) -- (evaluation.west);
+\coordinate (mid-root) at ($(a1.west)!.5!(c4.west)$);
+\node[root,anchor=west] (overview) at (0,0 |- mid-root) {Survey\\Overview};
+\draw[link] (overview.east) -- (1.44,0 |- overview.east);
+\draw[link] (1.44,0 |- architectures.west) -- (1.44,0 |- comparison.west);
+\draw[link] (1.44,0 |- architectures.west) -- (architectures.west);
+\draw[link] (1.44,0 |- comparison.west) -- (comparison.west);
+\end{tikzpicture}
+\endgroup
