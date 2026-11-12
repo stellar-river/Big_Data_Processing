@@ -44,7 +44,7 @@ survey/
 python3 survey/scripts/build.py
 ```
 
-脚本先编译`figures/`下的三张插图（`overview`、`paradigms`、`semantic_id`），再编译正文和参考文献，生成对应的`figures/*.pdf`与`survey/output/survey.pdf`。正文中的两张表（表1方法总览、表2范式对比）直接写在`main.tex`里。所有辅助文件和构建日志写入`survey/build/`。
+脚本先编译`figures/`下的三张插图（`overview`、`paradigms`、`semantic_id`），再编译正文和参考文献，生成对应的`figures/*.pdf`与`survey/output/survey.pdf`。所有辅助文件和构建日志写入`survey/build/`。
 
 若TeX Live不在`PATH`中，可以指定二进制目录：
 
